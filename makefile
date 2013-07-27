@@ -2,8 +2,9 @@
 
 
 
-all:	ahaxis
+all:	ahfind
 
-ahaxis:	AHaxis.f90
+ahfind:	AHaxis.f90
 	@echo "Compiling"
-	gfortran AHaxis.f90 -o ahaxis
+	gfortran AHaxis.f90 -o ahfind
+
