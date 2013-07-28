@@ -151,7 +151,7 @@ contains
     real :: gammacov_rr
     real, intent(in) :: r,z,M
 
-    gammacov_rr = 1.0!(1.0+M/2.0/r)**4
+    gammacov_rr = (1.0+M/2.0/sqrt(r**2+z**2))**4
 
   end function gammacov_rr
 
@@ -182,7 +182,7 @@ contains
     real :: gammacov_zz 
     real, intent(in) :: r,z,M
 
-    gammacov_zz=  1.0!(1.0+M/2.0/r)**4*r**2
+    gammacov_zz=  (1.0+M/2.0/sqrt(r**2+z**2))**4
 
   end function gammacov_zz
 
@@ -203,7 +203,7 @@ contains
     real :: gammacov_pp
     real, intent(in) :: r,z,M
 
-    gammacov_pp= r**2!(1.0+M/2.0/r)**4*(r*sin(th))**2
+    gammacov_pp= r**2*(1.0+M/2.0/sqrt(r**2+z**2))**4
 
   end function gammacov_pp
 
@@ -215,7 +215,7 @@ contains
     real :: gammacov_pp_reg
     real, intent(in) :: r,z,M
 
-    gammacov_pp_reg=  r**2+z**2!(1.0+M/2.0/r)**4*(r)**2
+    gammacov_pp_reg=  (r**2+z**2)*(1.0+M/2.0/sqrt(r**2+z**2))**4
 
   end function gammacov_pp_reg
 
@@ -226,19 +226,19 @@ contains
     real :: gamma_rr
     real, intent(in) :: r,z,M
 
-    gamma_rr= (2.0*r/(2.0*r+M))**4
+    gamma_rr= 1.0/(1.0+M/2.0/sqrt(r**2+z**2))**4!(2.0*r/(2.0*r+M))**4
 
   end function gamma_rr
 
-  function gamma_rt(r,z,M)
+  function gamma_rz(r,z,M)
     implicit none
 
-    real :: gamma_rt
+    real :: gamma_rz
     real, intent(in) :: r,z,M
 
-    gamma_rt= 0.0
+    gamma_rz= 0.0
 
-  end function gamma_rt
+  end function gamma_rz
 
   function gamma_rp(r,z,M)
     implicit none
@@ -246,30 +246,30 @@ contains
     real :: gamma_rp
     real, intent(in) :: r,z,M
 
-    gamma_rp= 0.0!(r/(2.0*r+M))**4
+    gamma_rp= 0.0
 
   end function gamma_rp
 
 
-  function gamma_tt(r,z,M)
+  function gamma_zz(r,z,M)
     implicit none
 
-    real :: gamma_tt
+    real :: gamma_zz
     real, intent(in) :: r,z,M
 
-    gamma_tt= (2.0*r/(2.0*r+M))**4/r**2
+    gamma_zz= 1.0/(1.0+M/2.0/sqrt(r**2+z**2))**4!(2.0*r/(2.0*r+M))**4/r**2
 
-  end function gamma_tt
+  end function gamma_zz
 
-  function gamma_tp(r,z,M)
+  function gamma_zp(r,z,M)
     implicit none
 
-    real :: gamma_tp
+   real :: gamma_zp
     real, intent(in) :: r,z,M
 
-    gamma_tp= 0.0
+    gamma_zp= 0.0
 
-  end function gamma_tp
+  end function gamma_zp
 
 
   function gamma_pp(r,z,M)
@@ -278,7 +278,7 @@ contains
     real :: gamma_pp
     real, intent(in) :: r,z,M
 
-    gamma_pp= (2.0*r/(2.0*r+M))**4/(r*sin(th))**2
+    gamma_pp= 1.0/r**2/(1.0+M/2.0/sqrt(r**2+z**2))**4!(2.0*r/(2.0*r+M))**4/(r*sin(th))**2
 
   end function gamma_pp
 
@@ -288,7 +288,7 @@ contains
     real :: gcDelta_r
     real, intent(in) :: r,z,M
 
-    gcDelta_r= 32.0*r**3*M/(2.0*r+M)**5 !-2.0/r!-2.0*M/(r*(2.0*r+M))
+    gcDelta_r= r*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))**5 !-2.0/r!-2.0*M/(r*(2.0*r+M))
 
   end function gcDelta_r
 
@@ -299,7 +299,7 @@ contains
     real :: gcDelta_z
     real, intent(in) :: r,z,M
 
-    gcDelta_z= 0.0!-atan(th)/r!-2.0*M/(r*(2.0*r+M))
+    gcDelta_z= z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))**5!-atan(th)/r!-2.0*M/(r*(2.0*r+M))
 
   end function gcDelta_z
 
@@ -319,19 +319,19 @@ contains
     real :: Delta_full_rrr
     real, intent(in) :: r,z,M
 
-    Delta_full_rrr= -2.0*M/(r*(2.0*r+M))
+    Delta_full_rrr= -r*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))!-2.0*M/(r*(2.0*r+M))
 
   end function Delta_full_rrr
 
-  function Delta_full_rrt(r,z,M)
+  function Delta_full_rrz(r,z,M)
     implicit none
 
-    real :: Delta_full_rrt
+    real :: Delta_full_rrz
     real, intent(in) :: r,z,M
 
-    Delta_full_rrt= 0.0
+    Delta_full_rrz= -z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
 
-  end function Delta_full_rrt
+  end function Delta_full_rrz
 
   function Delta_full_rrp(r,z,M)
     implicit none
@@ -343,25 +343,25 @@ contains
 
   end function Delta_full_rrp
 
-  function Delta_full_rtt(r,z,M)
+  function Delta_full_rzz(r,z,M)
     implicit none
 
-    real :: Delta_full_rtt
+    real :: Delta_full_rzz
     real, intent(in) :: r,z,M
 
-    Delta_full_rtt = (2.0*r*M)/(2.0*r+M)
+    Delta_full_rzz = r*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))!(2.0*r*M)/(2.0*r+M)
 
-  end function Delta_full_rtt
+  end function Delta_full_rzz
 
-  function Delta_full_rtp(r,z,M)
+  function Delta_full_rzp(r,z,M)
     implicit none
 
-    real :: Delta_full_rtp
+    real :: Delta_full_rzp
     real, intent(in) :: r,z,M
 
-    Delta_full_rtp = 0.0
+    Delta_full_rzp = 0.0
 
-  end function Delta_full_rtp
+  end function Delta_full_rzp
 
   function Delta_full_rpp(r,z,M)
     implicit none
@@ -369,7 +369,7 @@ contains
     real :: Delta_full_rpp
     real, intent(in) :: r,z,M
 
-    Delta_full_rpp = 2.0*r*M*r*sin(th)**2/(2.0*r+M)
+    Delta_full_rpp = r**3*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))!2.0*r*M*r*sin(th)**2/(2.0*r+M)
 
   end function Delta_full_rpp
 
@@ -379,20 +379,20 @@ contains
     real :: Delta_full_zrr
     real, intent(in) :: r,z,M
 
-    Delta_full_zrr = 0.0
+    Delta_full_zrr = r*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
 
   end function Delta_full_zrr
 
 
-  function Delta_full_zrt(r,z,M)
+  function Delta_full_zrz(r,z,M)
     implicit none
 
-    real :: Delta_full_zrt
+    real :: Delta_full_zrz
     real, intent(in) :: r,z,M
 
-    Delta_full_zrt = -2.0*M/((2.0*r+M)*r)
+    Delta_full_zrz = -r*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))!-2.0*M/((2.0*r+M)*r)
 
-  end function Delta_full_zrt
+  end function Delta_full_zrz
 
 
   function Delta_full_zrp(r,z,M)
@@ -406,25 +406,25 @@ contains
   end function Delta_full_zrp
 
 
-  function Delta_full_ztt(r,z,M)
+  function Delta_full_zzz(r,z,M)
     implicit none
 
-    real :: Delta_full_ztt
+    real :: Delta_full_zzz
     real, intent(in) :: r,z,M
 
-    Delta_full_ztt = 0.0
+    Delta_full_zzz = -z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
 
-  end function Delta_full_ztt
+  end function Delta_full_zzz
 
-  function Delta_full_ztp(r,z,M)
+  function Delta_full_zzp(r,z,M)
     implicit none
 
-    real :: Delta_full_ztp
+    real :: Delta_full_zzp
     real, intent(in) :: r,z,M
 
-    Delta_full_ztp = 0.0
+    Delta_full_zzp = 0.0
 
-  end function Delta_full_ztp
+  end function Delta_full_zzp
 
   function Delta_full_zpp(r,z,M)
     implicit none
@@ -432,7 +432,7 @@ contains
     real :: Delta_full_zpp
     real, intent(in) :: r,z,M
 
-    Delta_full_zpp = 0.0!-sin(th)*cos(th)
+    Delta_full_zpp = r**2*z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))!-sin(th)*cos(th)
 
   end function Delta_full_zpp
 
@@ -446,15 +446,15 @@ contains
 
   end function Delta_full_prr
 
-  function Delta_full_prt(r,z,M)
+  function Delta_full_prz(r,z,M)
     implicit none
 
-    real :: Delta_full_prt
+    real :: Delta_full_prz
     real, intent(in) :: r,z,M
 
-    Delta_full_prt = 0.0
+    Delta_full_prz = 0.0
 
-  end function Delta_full_prt
+  end function Delta_full_prz
 
 
   function Delta_full_prp(r,z,M)
@@ -463,30 +463,30 @@ contains
     real :: Delta_full_prp
     real, intent(in) :: r,z,M
 
-    Delta_full_prp = -2.0*M/((2.0*r+M)*r)
+    Delta_full_prp = -r*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))!-2.0*M/((2.0*r+M)*r)
 
   end function Delta_full_prp
 
 
-  function Delta_full_ptt(r,z,M)
+  function Delta_full_pzz(r,z,M)
     implicit none
 
-    real :: Delta_full_ptt
+    real :: Delta_full_pzz
     real, intent(in) :: r,z,M
 
-    Delta_full_ptt = 0.0
+    Delta_full_pzz = 0.0
 
-  end function Delta_full_ptt
+  end function Delta_full_pzz
 
-  function Delta_full_ptp(r,z,M)
+  function Delta_full_pzp(r,z,M)
     implicit none
 
-    real :: Delta_full_ptp
+    real :: Delta_full_pzp
     real, intent(in) :: r,z,M
 
-    Delta_full_ptp = 0.0!atan(th)
+    Delta_full_pzp = -z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))!atan(th)
 
-  end function Delta_full_ptp
+  end function Delta_full_pzp
 
   function Delta_full_ppp(r,z,M)
     implicit none
@@ -521,7 +521,7 @@ contains
     real:: det 
     real:: u_sq
 
-    real :: dr_F,dt_F,dp_F
+    real :: dr_F,dz_F,dp_F
     
     real :: metspheric_rr,metspheric_rt,metspheric_rp
     real :: metspheric_tt,metspheric_tp,metspheric_pp
@@ -552,53 +552,64 @@ contains
     metspheric_tp= ((z_grid-z0)*gammacov_rp(r_grid,z_grid,M)-r&
          &*gammacov_zp(r_grid,z_grid,M))
 
-!!$    metspheric_rr= 1.0!(r_grid**2+(z_grid-z0)**2)/h**2
-!!$    metspheric_tt= (r_grid**2+(z_grid-z0)**2)
-!!$    metspheric_pp= r_grid**2
-!!$    metspheric_pp_reg= h**2
-!!$    metspheric_rt= 0.0
-!!$    metspheric_rp= 0.0
-!!$    metspheric_tp= 0.0
 
-!    print*, metspheric_rr,metspheric_rt,metspheric_pp_reg
+
 
     ! some auxiliary calculations
-!!$    det = gammacov_rr(h,th,M)*gammacov_tt(h,th,M)*gammacov_pp(h,th,M)&
-!!$         &+2.0*gammacov_rt(h,th,M)*gammacov_tp(h,th,M)*gammacov_rp(h,th,M)&
-!!$         &-gammacov_rr(h,th,M)*gammacov_tp(h,th,M)**2&
-!!$         &-gammacov_tt(h,th,M)*gammacov_rp(h,th,M)**2&
-!!$         &-gammacov_pp(h,th,M)*gammacov_rt(h,th,M)**2
-!!$
-!!$
-!!$    u_sq=gamma_rr(r_t,th_t,M)-2.0*gamma_rt(r_t,th_t,M)*q+gamma_tt(r_t,th_t,M)*q**2
-!!$
-!!$    dr_F=gamma_rr(r_t,th_t,M)-gamma_rt(r_t,th_t,M)*q
-!!$    dt_F=gamma_rt(r_t,th_t,M)-gamma_tt(r_t,th_t,M)*q
-!!$    dp_F=gamma_rp(r_t,th_t,M)-gamma_tp(r_t,th_t,M)*q
+    det = metspheric_rr*metspheric_tt*metspheric_pp&
+         &+2.0*metspheric_rt*metspheric_tp*metspheric_rp&
+         &-metspheric_rr*metspheric_tp**2&
+         &-metspheric_tt*metspheric_rp**2&
+         &-metspheric_pp*metspheric_rt**2
+
+
+    u_sq=gamma_rr(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)/h)**2/h**2&
+         &-2.0*gamma_rz(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)/h)&
+         &*(z_grid+q*r_grid/h)/h**2+ gamma_zz(r_grid,z_grid,M)&
+         &*(z_grid+q*r_grid/h)**2/h**2
+
+    dr_F=gamma_rr(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)/h)/h&
+         &-gamma_rz(r_grid,z_grid,M)*(z_grid+q*r_grid/h)/h
+    dz_F=gamma_rz(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)/h)/h&
+         &+gamma_zz(r_grid,z_grid,M)*(z_grid+q*r_grid/h)/h
+    dp_F=gamma_rp(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)/h)/h&
+         &+gamma_zp(r_grid,z_grid,M)*(z_grid+q*r_grid/h)/h
 
     ! Delta vector terms
 
-!!$    F_q_temp = u_sq*(gcDelta_r(r_t,th_t,M)-q*gcDelta_t(r_t,th_t,M))
+    F_q_temp = u_sq*(gcDelta_r(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)&
+         &/h)/h+gcDelta_z(r_grid,z_grid,M)*(z_grid+q*r_grid/h)/h)
 
     ! Delta tensor terms
 
-!!$    F_q_temp = F_q_temp - ( &
-!!$         & dr_F**2*(       Delta_full_rrr(r_t,th_t,M)-q*Delta_full_trr(r_t,th_t,M)) +&
-!!$         & 2.0*dr_F*dt_F*( Delta_full_rrt(r_t,th_t,M)-q*Delta_full_trt(r_t,th_t,M)) +&
-!!$         & 2.0*dr_F*dp_F*( Delta_full_rrp(r_t,th_t,M)-q*Delta_full_trp(r_t,th_t,M)) +&
-!!$         & dt_F**2*(       Delta_full_rtt(r_t,th_t,M)-q*Delta_full_ttt(r_t,th_t,M)) +&
-!!$         & 2.0*dt_F*dp_F*( Delta_full_rtp(r_t,th_t,M)-q*Delta_full_ttp(r_t,th_t,M)) +&
-!!$         & dp_F**2*(       Delta_full_rpp(r_t,th_t,M)-q*Delta_full_tpp(r_t,th_t,M)) )
+    F_q_temp = F_q_temp - ( &
+         & dr_F**2*(       Delta_full_rrr(r_grid,z_grid,M)*(r_grid-q&
+         &*(z_grid-z0)/h)/h +Delta_full_zrr(r_grid,z_grid,M)*(z_grid&
+         &+q*r_grid/h)/h) +&
+         & 2.0*dr_F*dz_F*( Delta_full_rrz(r_grid,z_grid,M)*(r_grid-q&
+         &*(z_grid-z0)/h)/h +Delta_full_zrz(r_grid,z_grid,M)*(z_grid&
+         &+q*r_grid/h)/h) +&
+         & 2.0*dr_F*dp_F*( Delta_full_rrp(r_grid,z_grid,M)*(r_grid-q&
+         &*(z_grid-z0)/h)/h +Delta_full_zrp(r_grid,z_grid,M)*(z_grid&
+         &+q*r_grid/h)/h) +&
+         & dz_F**2*(       Delta_full_rzz(r_grid,z_grid,M)*(r_grid-q&
+         &*(z_grid-z0)/h)/h +Delta_full_zzz(r_grid,z_grid,M)*(z_grid&
+         &+q*r_grid/h)/h) +&
+         & 2.0*dz_F*dp_F*( Delta_full_rzp(r_grid,z_grid,M)*(r_grid-q&
+         &*(z_grid-z0)/h)/h +Delta_full_zzp(r_grid,z_grid,M)*(z_grid&
+         &+q*r_grid/h)/h) +&
+         & dp_F**2*(       Delta_full_rpp(r_grid,z_grid,M)*(r_grid-q&
+         &*(z_grid-z0)/h)/h +Delta_full_zpp(r_grid,z_grid,M)*(z_grid&
+         &+q*r_grid/h)/h) )
 
     ! Extrinsic curvature terms (void for now)
 
     ! multiply by the correct factor
-!!$    F_q_temp = F_q_temp*(-det/gammacov_pp(r_t,th_t,M))
-
+    F_q_temp = F_q_temp*(-det/metspheric_pp )
 
     ! Terms from the background metric
     
-    F_q_temp = 0.0
+!    F_q_temp = 0.0
     
     F_q_temp = F_q_temp + h + 2.0*q**2/h &
          &+( metspheric_rr*q**2+2.0*metspheric_rt*q+metspheric_tt)&
@@ -629,7 +640,7 @@ contains
     real :: F_q_temp
     real:: det 
     real:: u_sq
-    real :: dr_F,dt_F,dp_F
+    real :: dr_F,dz_F,dp_F
 
     real :: z_grid,r_grid
 
@@ -662,57 +673,60 @@ contains
     metspheric_tp= ((z_grid-z0)*gammacov_rp(r_grid,z_grid,M)-r&
          &*gammacov_zp(r_grid,z_grid,M))
 
-!!$    metspheric_rr= 1.0
-!!$    metspheric_tt= (r_grid**2+(z_grid-z0)**2)
-!!$    metspheric_pp= r_grid**2
-!!$    metspheric_pp_reg= h**2
-!!$    metspheric_rt= 0.0
-!!$    metspheric_rp= 0.0
-!!$    metspheric_tp= 0.0
-!!$    print*, metspheric_rr,metspheric_rt,metspheric_pp_reg
-
     ! On axis determinant reduces to this, and we supress the metric
     ! common factor that is divided in calculations
+    det = metspheric_rr*metspheric_tt&
+         &-metspheric_rt**2
 
-!!$    det = gammacov_rr(h,th,M)*gammacov_tt(h,th,M)&
-!!$         &-gammacov_rt(h,th,M)**2
 
-    ! Boundary condition tell q = 0 on axis
+    ! Boundary condition says q = 0 on axis
 
-!!$    u_sq=gamma_rr(h,th,M)
-!!$
-!!$    dr_F=gamma_rr(h,th,M)
-!!$    dt_F=gamma_rt(h,th,M)
-!!$    dp_F=gamma_rp(h,th,M)
-!!$
+    u_sq=gamma_rr(r_grid,z_grid,M)*(r_grid)**2/h**2&
+         &-2.0*gamma_rz(r_grid,z_grid,M)*(r_grid)&
+         &*(z_grid)/h**2+ gamma_zz(r_grid,z_grid,M)&
+         &*(z_grid)**2/h**2
+
+    dr_F=gamma_rr(r_grid,z_grid,M)*(r_grid)/h&
+         &-gamma_rz(r_grid,z_grid,M)*(z_grid)/h
+    dz_F=gamma_rz(r_grid,z_grid,M)*(r_grid)/h&
+         &+gamma_zz(r_grid,z_grid,M)*(z_grid)/h
+    dp_F=gamma_rp(r_grid,z_grid,M)*(r_grid)/h&
+         &+gamma_zp(r_grid,z_grid,M)*(z_grid)/h
 
     ! Delta vector terms
 
-!!$    F_q_temp = u_sq*(gcDelta_r(h,th,M)-q*gcDelta_t(h,th,M))
+    F_q_temp = u_sq*(gcDelta_r(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)&
+         &/h)/h+gcDelta_z(r_grid,z_grid,M)*(z_grid+q*r_grid/h)/h)
 
     ! Delta tensor terms
 
-!!$    F_q_temp = F_q_temp - ( &
-!!$         & dr_F**2*(       Delta_full_rrr(h,th,M)-q*Delta_full_trr(h,th,M)) +&
-!!$         & 2.0*dr_F*dt_F*( Delta_full_rrt(h,th,M)-q*Delta_full_trt(h,th,M)) +&
-!!$         & 2.0*dr_F*dp_F*( Delta_full_rrp(h,th,M)-q*Delta_full_trp(h,th,M)) +&
-!!$         & dt_F**2*(       Delta_full_rtt(h,th,M)-q*Delta_full_ttt(h,th,M)) +&
-!!$         & 2.0*dt_F*dp_F*( Delta_full_rtp(h,th,M)-q*Delta_full_ttp(h,th,M)) +&
-!!$         & dp_F**2*(       Delta_full_rpp(h,th,M)-q*Delta_full_tpp(h,th,M)) )
+    F_q_temp = F_q_temp - ( &
+         & dr_F**2*(       Delta_full_rrr(r_grid,z_grid,M)*(r_grid-q&
+         &*(z_grid-z0)/h)/h +Delta_full_zrr(r_grid,z_grid,M)*(z_grid&
+         &+q*r_grid/h)/h) +&
+         & 2.0*dr_F*dz_F*( Delta_full_rrz(r_grid,z_grid,M)*(r_grid-q&
+         &*(z_grid-z0)/h)/h +Delta_full_zrz(r_grid,z_grid,M)*(z_grid&
+         &+q*r_grid/h)/h) +&
+         & 2.0*dr_F*dp_F*( Delta_full_rrp(r_grid,z_grid,M)*(r_grid-q&
+         &*(z_grid-z0)/h)/h +Delta_full_zrp(r_grid,z_grid,M)*(z_grid&
+         &+q*r_grid/h)/h) +&
+         & dz_F**2*(       Delta_full_rzz(r_grid,z_grid,M)*(r_grid-q&
+         &*(z_grid-z0)/h)/h +Delta_full_zzz(r_grid,z_grid,M)*(z_grid&
+         &+q*r_grid/h)/h) +&
+         & 2.0*dz_F*dp_F*( Delta_full_rzp(r_grid,z_grid,M)*(r_grid-q&
+         &*(z_grid-z0)/h)/h +Delta_full_zzp(r_grid,z_grid,M)*(z_grid&
+         &+q*r_grid/h)/h) +&
+         & dp_F**2*(       Delta_full_rpp(r_grid,z_grid,M)*(r_grid-q&
+         &*(z_grid-z0)/h)/h +Delta_full_zpp(r_grid,z_grid,M)*(z_grid&
+         &+q*r_grid/h)/h) )
 
     ! Extrinsic curvature terms (void for now)
 
     ! multiply by the correct factor
-
-!!$    F_q_temp = F_q_temp*(-det)
-
+    F_q_temp = F_q_temp*(-det)
 
     ! Terms from the background metric
     ! q = 0 cancels atan on axis
-
-!!$    F_q_temp = F_q_temp + h + 2.0*q**2/h &
-!!$         &+( gammacov_rr(h,th,M)*q**2+2.0*gammacov_rt(h,th,M)*q+gammacov_tt(h,th,M))&
-!!$         &*(h )/gammacov_pp_reg(h,th,M)
 
     F_q_temp = 0.0
 
