@@ -17,7 +17,7 @@ program main
   integer :: Nth,Nr
 
   real :: smallpi 
-  real :: r,th, M, z0, dth, ri, rmax, dr, eps_tol
+  real :: r_h,th_h, M, z0, dth, ri, rmax, dr, eps_tol
 
   real :: r_start
 
@@ -73,9 +73,9 @@ program main
      h=r_start
      q=0.0
 
-     th =0.0
-     write(66,*) h*sin(th),z0+h*cos(th)
-     write(67,*) th,q
+     th_h =0.0
+     write(66,*) h*sin(th_h),z0+h*cos(th_h)
+     write(67,*) th_h,q
 
      do i = 0, Nth-1
 
@@ -83,28 +83,28 @@ program main
         qp=q
 
         if (i==0) then
-           hk1= F_h0(th,hp,qp,M,z0)
-           qk1= F_q0(th,hp,qp,M,z0)
+           hk1= F_h0(th_h,hp,qp,M,z0)
+           qk1= F_q0(th_h,hp,qp,M,z0)
            
 !           print*, hp+.5*dth*hk1,qp+.5*dth*qk1
 
         else
-           hk1= F_h(th,hp,qp,M,z0)
-           qk1= F_q(th,hp,qp,M,z0)
+           hk1= F_h(th_h,hp,qp,M,z0)
+           qk1= F_q(th_h,hp,qp,M,z0)
         end if
 
-        hk2= F_h(th+.5*dth,hp+.5*dth*hk1,qp+.5*dth*qk1,M,z0)
-        qk2= F_q(th+.5*dth,hp+.5*dth*hk1,qp+.5*dth*qk1,M,z0)
+        hk2= F_h(th_h+.5*dth,hp+.5*dth*hk1,qp+.5*dth*qk1,M,z0)
+        qk2= F_q(th_h+.5*dth,hp+.5*dth*hk1,qp+.5*dth*qk1,M,z0)
 
         h = hp+dth*hk2
         q = qp+dth*qk2
 
 !        print*, h,q
 
-        th = th+dth
+        th_h = th_h+dth
 
-        write(66,*) h*sin(th),z0+h*cos(th)
-        write(67,*) th,q
+        write(66,*) h*sin(th_h),z0+h*cos(th_h)
+        write(67,*) th_h,q
 
      end do
 
@@ -215,7 +215,7 @@ contains
     real :: gammacov_pp_reg
     real, intent(in) :: r,z,M
 
-    gammacov_pp_reg=  (r**2+z**2)!*(1.0+M/2.0/sqrt(r**2+z**2))**4
+    gammacov_pp_reg=  1.0!*(1.0+M/2.0/sqrt(r**2+z**2))**4
 
   end function gammacov_pp_reg
 
@@ -536,22 +536,30 @@ contains
 
     !The metric in the finder chart must be transformed from grid chart
 
-    metspheric_rr= (r_grid**2*gammacov_rr(r_grid,z_grid,M)+2.0*(z_grid-z0)*r&
-         &*gammacov_rz(r_grid,z_grid,M)+(z_grid-z0)**2*gammacov_zz(r_grid&
-         &,z_grid,M))/h**2
-    metspheric_tt= ((z_grid-z0)**2*gammacov_rr(r_grid,z_grid,M)-2*(z_grid-z0)*r&
-         &*gammacov_rz(r_grid,z_grid,M)+r_grid**2*gammacov_zz(r_grid,z_grid&
+    metspheric_rr= (sin(th)**2*gammacov_rr(r_grid,z_grid,M)+2.0*cos(th)*sin(th)&
+         &*gammacov_rz(r_grid,z_grid,M)+cos(th)**2*gammacov_zz(r_grid&
+         &,z_grid,M))
+    metspheric_tt= h**2*(cos(th)**2*gammacov_rr(r_grid,z_grid,M)-2*cos(th)*sin(th)&
+         &*gammacov_rz(r_grid,z_grid,M)+sin(th)**2*gammacov_zz(r_grid,z_grid&
          &,M))
     metspheric_pp= gammacov_pp(r_grid,z_grid,M)
-    metspheric_pp_reg= gammacov_pp_reg(r_grid,z_grid,M)
-    metspheric_rt= ( r_grid*(z_grid-z0)*gammacov_rr(r_grid,z_grid,M)+((z_grid-z0)**2&
-         &-r_grid**2)*gammacov_rz(r_grid,z_grid,M)-(z_grid-z0)*r&
-         &*gammacov_zz(r_grid,z_grid,M))/h
-    metspheric_rp= (r_grid*gammacov_rp(r_grid,z_grid,M)+(z_grid-z0)&
-         &*gammacov_zp(r_grid,z_grid,M))/h
-    metspheric_tp= ((z_grid-z0)*gammacov_rp(r_grid,z_grid,M)-r&
+    metspheric_pp_reg = h**2*gammacov_pp_reg(r_grid,z_grid,M)
+    metspheric_rt= ( sin(th)*cos(th)*gammacov_rr(r_grid,z_grid,M)+(cos(th)**2&
+         &-sin(th)**2)*gammacov_rz(r_grid,z_grid,M)-cos(th)*sin(th)&
+         &*gammacov_zz(r_grid,z_grid,M))*h
+    metspheric_rp= (sin(th)*gammacov_rp(r_grid,z_grid,M)+cos(th)&
          &*gammacov_zp(r_grid,z_grid,M))
+    metspheric_tp= (cos(th)*gammacov_rp(r_grid,z_grid,M)-sin(th)&
+         &*gammacov_zp(r_grid,z_grid,M))*h
 
+
+!!$    metspheric_rr= 1.0
+!!$    metspheric_tt= h**2
+!!$    metspheric_pp= h**2*sin(th)**2
+!!$    metspheric_pp_reg = h**2
+!!$    metspheric_rt= 0.0
+!!$    metspheric_rp= 0.0
+!!$    metspheric_tp= 0.0
 
 
 
@@ -609,7 +617,7 @@ contains
 
     ! Terms from the background metric
     
-!    F_q_temp = 0.0
+    F_q_temp = 0.0
     
     F_q_temp = F_q_temp + h + 2.0*q**2/h &
          &+( metspheric_rr*q**2+2.0*metspheric_rt*q+metspheric_tt)&
@@ -657,21 +665,30 @@ contains
 
     !The metric in the finder chart must be transformed from grid chart
 
-    metspheric_rr= (r_grid**2*gammacov_rr(r_grid,z_grid,M)+2.0*(z_grid-z0)*r&
-         &*gammacov_rz(r_grid,z_grid,M)+(z_grid-z0)**2*gammacov_zz(r_grid&
-         &,z_grid,M))/h**2
-    metspheric_tt= ((z_grid-z0)**2*gammacov_rr(r_grid,z_grid,M)-2*(z_grid-z0)*r&
-         &*gammacov_rz(r_grid,z_grid,M)+r_grid**2*gammacov_zz(r_grid,z_grid&
+    metspheric_rr= (sin(th)**2*gammacov_rr(r_grid,z_grid,M)+2.0*cos(th)*sin(th)&
+         &*gammacov_rz(r_grid,z_grid,M)+cos(th)**2*gammacov_zz(r_grid&
+         &,z_grid,M))
+    metspheric_tt= h**2*(cos(th)**2*gammacov_rr(r_grid,z_grid,M)-2*cos(th)*sin(th)&
+         &*gammacov_rz(r_grid,z_grid,M)+sin(th)**2*gammacov_zz(r_grid,z_grid&
          &,M))
     metspheric_pp= gammacov_pp(r_grid,z_grid,M)
-    metspheric_pp_reg = gammacov_pp_reg(r_grid,z_grid,M)
-    metspheric_rt= ( r_grid*(z_grid-z0)*gammacov_rr(r_grid,z_grid,M)+((z_grid-z0)**2&
-         &-r_grid**2)*gammacov_rz(r_grid,z_grid,M)-(z_grid-z0)*r&
-         &*gammacov_zz(r_grid,z_grid,M))/h
-    metspheric_rp= (r_grid*gammacov_rp(r_grid,z_grid,M)+(z_grid-z0)&
-         &*gammacov_zp(r_grid,z_grid,M))/h
-    metspheric_tp= ((z_grid-z0)*gammacov_rp(r_grid,z_grid,M)-r&
+    metspheric_pp_reg = h**2*gammacov_pp_reg(r_grid,z_grid,M)
+    metspheric_rt= ( sin(th)*cos(th)*gammacov_rr(r_grid,z_grid,M)+(cos(th)**2&
+         &-sin(th)**2)*gammacov_rz(r_grid,z_grid,M)-cos(th)*sin(th)&
+         &*gammacov_zz(r_grid,z_grid,M))*h
+    metspheric_rp= (sin(th)*gammacov_rp(r_grid,z_grid,M)+cos(th)&
          &*gammacov_zp(r_grid,z_grid,M))
+    metspheric_tp= (cos(th)*gammacov_rp(r_grid,z_grid,M)-sin(th)&
+         &*gammacov_zp(r_grid,z_grid,M))*h
+
+!!$    metspheric_rr= 1.0
+!!$    metspheric_tt= h**2
+!!$    metspheric_pp= h**2*sin(th)**2
+!!$    metspheric_pp_reg = h**2
+!!$    metspheric_rt= 0.0
+!!$    metspheric_rp= 0.0
+!!$    metspheric_tp= 0.0
+
 
     ! On axis determinant reduces to this, and we supress the metric
     ! common factor that is divided in calculations
