@@ -151,7 +151,7 @@ contains
     real :: gammacov_rr
     real, intent(in) :: r,z,M
 
-    gammacov_rr = 1.0!(1.0+M/2.0/sqrt(r**2+z**2))**4
+    gammacov_rr = (1.0+M/2.0/sqrt(r**2+z**2))**4
 
   end function gammacov_rr
 
@@ -182,7 +182,7 @@ contains
     real :: gammacov_zz 
     real, intent(in) :: r,z,M
 
-    gammacov_zz=  1.0!(1.0+M/2.0/sqrt(r**2+z**2))**4
+    gammacov_zz=  (1.0+M/2.0/sqrt(r**2+z**2))**4
 
   end function gammacov_zz
 
@@ -203,7 +203,7 @@ contains
     real :: gammacov_pp
     real, intent(in) :: r,z,M
 
-    gammacov_pp= r**2!*(1.0+M/2.0/sqrt(r**2+z**2))**4
+    gammacov_pp= r**2*(1.0+M/2.0/sqrt(r**2+z**2))**4
 
   end function gammacov_pp
 
@@ -215,7 +215,7 @@ contains
     real :: gammacov_pp_reg
     real, intent(in) :: r,z,M
 
-    gammacov_pp_reg=  1.0!*(1.0+M/2.0/sqrt(r**2+z**2))**4
+    gammacov_pp_reg=  (1.0+M/2.0/sqrt(r**2+z**2))**4
 
   end function gammacov_pp_reg
 
@@ -226,7 +226,7 @@ contains
     real :: gamma_rr
     real, intent(in) :: r,z,M
 
-    gamma_rr= 1.0!/(1.0+M/2.0/sqrt(r**2+z**2))**4
+    gamma_rr= 1.0/(1.0+M/2.0/sqrt(r**2+z**2))**4
 
   end function gamma_rr
 
@@ -257,7 +257,7 @@ contains
     real :: gamma_zz
     real, intent(in) :: r,z,M
 
-    gamma_zz= 1.0!/(1.0+M/2.0/sqrt(r**2+z**2))**4
+    gamma_zz= 1.0/(1.0+M/2.0/sqrt(r**2+z**2))**4
 
   end function gamma_zz
 
@@ -278,7 +278,7 @@ contains
     real :: gamma_pp
     real, intent(in) :: r,z,M
 
-    gamma_pp= 1.0/r**2!/(1.0+M/2.0/sqrt(r**2+z**2))**4
+    gamma_pp= 1.0/r**2/(1.0+M/2.0/sqrt(r**2+z**2))**4
 
   end function gamma_pp
 
@@ -288,7 +288,7 @@ contains
     real :: gcDelta_r
     real, intent(in) :: r,z,M
 
-    gcDelta_r= 0.0!r*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))**5
+    gcDelta_r= r*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))**5
 
   end function gcDelta_r
 
@@ -299,7 +299,7 @@ contains
     real :: gcDelta_z
     real, intent(in) :: r,z,M
 
-    gcDelta_z= 0.0!z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))**5
+    gcDelta_z= z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))**5
 
   end function gcDelta_z
 
@@ -319,7 +319,7 @@ contains
     real :: Delta_full_rrr
     real, intent(in) :: r,z,M
 
-    Delta_full_rrr= 0.0!-r*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
+    Delta_full_rrr= -r*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
 
   end function Delta_full_rrr
 
@@ -329,7 +329,7 @@ contains
     real :: Delta_full_rrz
     real, intent(in) :: r,z,M
 
-    Delta_full_rrz= 0.0!-z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
+    Delta_full_rrz= -z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
 
   end function Delta_full_rrz
 
@@ -349,7 +349,7 @@ contains
     real :: Delta_full_rzz
     real, intent(in) :: r,z,M
 
-    Delta_full_rzz = 0.0!r*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
+    Delta_full_rzz = r*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
 
   end function Delta_full_rzz
 
@@ -369,7 +369,7 @@ contains
     real :: Delta_full_rpp
     real, intent(in) :: r,z,M
 
-    Delta_full_rpp = 0.0!r**3*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
+    Delta_full_rpp = r**3*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
 
   end function Delta_full_rpp
 
@@ -379,7 +379,7 @@ contains
     real :: Delta_full_zrr
     real, intent(in) :: r,z,M
 
-    Delta_full_zrr = 0.0!z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
+    Delta_full_zrr = z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
 
   end function Delta_full_zrr
 
@@ -390,7 +390,7 @@ contains
     real :: Delta_full_zrz
     real, intent(in) :: r,z,M
 
-    Delta_full_zrz = 0.0!-r*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
+    Delta_full_zrz = -r*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
 
   end function Delta_full_zrz
 
@@ -412,7 +412,7 @@ contains
     real :: Delta_full_zzz
     real, intent(in) :: r,z,M
 
-    Delta_full_zzz = 0.0!-z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
+    Delta_full_zzz = -z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
 
   end function Delta_full_zzz
 
@@ -432,7 +432,7 @@ contains
     real :: Delta_full_zpp
     real, intent(in) :: r,z,M
 
-    Delta_full_zpp = 0.0!r**2*z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
+    Delta_full_zpp = r**2*z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
 
   end function Delta_full_zpp
 
@@ -463,7 +463,7 @@ contains
     real :: Delta_full_prp
     real, intent(in) :: r,z,M
 
-    Delta_full_prp = 0.0!-r*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
+    Delta_full_prp = -r*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
 
   end function Delta_full_prp
 
@@ -484,7 +484,7 @@ contains
     real :: Delta_full_pzp
     real, intent(in) :: r,z,M
 
-    Delta_full_pzp = 0.0!-z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
+    Delta_full_pzp = -z*M/sqrt(r**2+z**2)**3/(1.0+M/2.0/sqrt(r**2+z**2))
 
   end function Delta_full_pzp
 
