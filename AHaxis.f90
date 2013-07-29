@@ -571,44 +571,45 @@ contains
          &-metspheric_pp*metspheric_rt**2
 
 
-    u_sq=gamma_rr(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)/h)**2/h**2&
+    u_sq= gamma_rr(r_grid,z_grid,M)* (r_grid-q*(z_grid-z0)/h)**2/h**2&
          &-2.0*gamma_rz(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)/h)&
-         &*(z_grid+q*r_grid/h)/h**2+ gamma_zz(r_grid,z_grid,M)&
-         &*(z_grid+q*r_grid/h)**2/h**2
+         &*((z_grid-z0)+q*r_grid/h)/h**2+ gamma_zz(r_grid,z_grid,M)&
+         &*((z_grid-z0)+q*r_grid/h)**2/h**2
 
     dr_F=gamma_rr(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)/h)/h&
-         &-gamma_rz(r_grid,z_grid,M)*(z_grid+q*r_grid/h)/h
+         &-gamma_rz(r_grid,z_grid,M)*((z_grid-z0)+q*r_grid/h)/h
     dz_F=gamma_rz(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)/h)/h&
-         &+gamma_zz(r_grid,z_grid,M)*(z_grid+q*r_grid/h)/h
+         &+gamma_zz(r_grid,z_grid,M)*((z_grid-z0)+q*r_grid/h)/h
     dp_F=gamma_rp(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)/h)/h&
-         &+gamma_zp(r_grid,z_grid,M)*(z_grid+q*r_grid/h)/h
+         &+gamma_zp(r_grid,z_grid,M)*((z_grid-z0)+q*r_grid/h)/h
 
     ! Delta vector terms
 
     F_q_temp = u_sq*(gcDelta_r(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)&
-         &/h)/h+gcDelta_z(r_grid,z_grid,M)*(z_grid+q*r_grid/h)/h)
+         &/h)/h+gcDelta_z(r_grid,z_grid,M)*((z_grid-z0)+q*r_grid/h)/h)
 
     ! Delta tensor terms
 
     F_q_temp = F_q_temp - ( &
          & dr_F**2*(       Delta_full_rrr(r_grid,z_grid,M)*(r_grid-q&
-         &*(z_grid-z0)/h)/h +Delta_full_zrr(r_grid,z_grid,M)*(z_grid&
+         &*(z_grid-z0)/h)/h +Delta_full_zrr(r_grid,z_grid,M)*((z_grid-z0)&
          &+q*r_grid/h)/h) +&
          & 2.0*dr_F*dz_F*( Delta_full_rrz(r_grid,z_grid,M)*(r_grid-q&
-         &*(z_grid-z0)/h)/h +Delta_full_zrz(r_grid,z_grid,M)*(z_grid&
+         &*(z_grid-z0)/h)/h +Delta_full_zrz(r_grid,z_grid,M)*((z_grid-z0)&
          &+q*r_grid/h)/h) +&
          & 2.0*dr_F*dp_F*( Delta_full_rrp(r_grid,z_grid,M)*(r_grid-q&
-         &*(z_grid-z0)/h)/h +Delta_full_zrp(r_grid,z_grid,M)*(z_grid&
+         &*(z_grid-z0)/h)/h +Delta_full_zrp(r_grid,z_grid,M)*((z_grid-z0)&
          &+q*r_grid/h)/h) +&
          & dz_F**2*(       Delta_full_rzz(r_grid,z_grid,M)*(r_grid-q&
-         &*(z_grid-z0)/h)/h +Delta_full_zzz(r_grid,z_grid,M)*(z_grid&
+         &*(z_grid-z0)/h)/h +Delta_full_zzz(r_grid,z_grid,M)*((z_grid-z0)&
          &+q*r_grid/h)/h) +&
          & 2.0*dz_F*dp_F*( Delta_full_rzp(r_grid,z_grid,M)*(r_grid-q&
-         &*(z_grid-z0)/h)/h +Delta_full_zzp(r_grid,z_grid,M)*(z_grid&
+         &*(z_grid-z0)/h)/h +Delta_full_zzp(r_grid,z_grid,M)*((z_grid-z0)&
          &+q*r_grid/h)/h) +&
          & dp_F**2*(       Delta_full_rpp(r_grid,z_grid,M)*(r_grid-q&
-         &*(z_grid-z0)/h)/h +Delta_full_zpp(r_grid,z_grid,M)*(z_grid&
+         &*(z_grid-z0)/h)/h +Delta_full_zpp(r_grid,z_grid,M)*((z_grid-z0)&
          &+q*r_grid/h)/h) )
+
 
     ! Extrinsic curvature terms (void for now)
 
@@ -617,7 +618,7 @@ contains
 
     ! Terms from the background metric
     
-    F_q_temp = 0.0
+!    F_q_temp = 0.0
     
     F_q_temp = F_q_temp + h + 2.0*q**2/h &
          &+( metspheric_rr*q**2+2.0*metspheric_rt*q+metspheric_tt)&
@@ -681,13 +682,6 @@ contains
     metspheric_tp= (cos(th)*gammacov_rp(r_grid,z_grid,M)-sin(th)&
          &*gammacov_zp(r_grid,z_grid,M))*h
 
-!!$    metspheric_rr= 1.0
-!!$    metspheric_tt= h**2
-!!$    metspheric_pp= h**2*sin(th)**2
-!!$    metspheric_pp_reg = h**2
-!!$    metspheric_rt= 0.0
-!!$    metspheric_rp= 0.0
-!!$    metspheric_tp= 0.0
 
 
     ! On axis determinant reduces to this, and we supress the metric
@@ -700,41 +694,41 @@ contains
 
     u_sq=gamma_rr(r_grid,z_grid,M)*(r_grid)**2/h**2&
          &-2.0*gamma_rz(r_grid,z_grid,M)*(r_grid)&
-         &*(z_grid)/h**2+ gamma_zz(r_grid,z_grid,M)&
-         &*(z_grid)**2/h**2
+         &*(z_grid-z0)/h**2+ gamma_zz(r_grid,z_grid,M)&
+         &*(z_grid-z0)**2/h**2
 
     dr_F=gamma_rr(r_grid,z_grid,M)*(r_grid)/h&
-         &-gamma_rz(r_grid,z_grid,M)*(z_grid)/h
+         &-gamma_rz(r_grid,z_grid,M)*(z_grid-z0)/h
     dz_F=gamma_rz(r_grid,z_grid,M)*(r_grid)/h&
-         &+gamma_zz(r_grid,z_grid,M)*(z_grid)/h
+         &+gamma_zz(r_grid,z_grid,M)*(z_grid-z0)/h
     dp_F=gamma_rp(r_grid,z_grid,M)*(r_grid)/h&
-         &+gamma_zp(r_grid,z_grid,M)*(z_grid)/h
+         &+gamma_zp(r_grid,z_grid,M)*(z_grid-z0)/h
 
     ! Delta vector terms
 
     F_q_temp = u_sq*(gcDelta_r(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)&
-         &/h)/h+gcDelta_z(r_grid,z_grid,M)*(z_grid+q*r_grid/h)/h)
+         &/h)/h+gcDelta_z(r_grid,z_grid,M)*((z_grid-z0)+q*r_grid/h)/h)
 
     ! Delta tensor terms
 
     F_q_temp = F_q_temp - ( &
          & dr_F**2*(       Delta_full_rrr(r_grid,z_grid,M)*(r_grid-q&
-         &*(z_grid-z0)/h)/h +Delta_full_zrr(r_grid,z_grid,M)*(z_grid&
+         &*(z_grid-z0)/h)/h +Delta_full_zrr(r_grid,z_grid,M)*((z_grid-z0)&
          &+q*r_grid/h)/h) +&
          & 2.0*dr_F*dz_F*( Delta_full_rrz(r_grid,z_grid,M)*(r_grid-q&
-         &*(z_grid-z0)/h)/h +Delta_full_zrz(r_grid,z_grid,M)*(z_grid&
+         &*(z_grid-z0)/h)/h +Delta_full_zrz(r_grid,z_grid,M)*((z_grid-z0)&
          &+q*r_grid/h)/h) +&
          & 2.0*dr_F*dp_F*( Delta_full_rrp(r_grid,z_grid,M)*(r_grid-q&
-         &*(z_grid-z0)/h)/h +Delta_full_zrp(r_grid,z_grid,M)*(z_grid&
+         &*(z_grid-z0)/h)/h +Delta_full_zrp(r_grid,z_grid,M)*((z_grid-z0)&
          &+q*r_grid/h)/h) +&
          & dz_F**2*(       Delta_full_rzz(r_grid,z_grid,M)*(r_grid-q&
-         &*(z_grid-z0)/h)/h +Delta_full_zzz(r_grid,z_grid,M)*(z_grid&
+         &*(z_grid-z0)/h)/h +Delta_full_zzz(r_grid,z_grid,M)*((z_grid-z0)&
          &+q*r_grid/h)/h) +&
          & 2.0*dz_F*dp_F*( Delta_full_rzp(r_grid,z_grid,M)*(r_grid-q&
-         &*(z_grid-z0)/h)/h +Delta_full_zzp(r_grid,z_grid,M)*(z_grid&
+         &*(z_grid-z0)/h)/h +Delta_full_zzp(r_grid,z_grid,M)*((z_grid-z0)&
          &+q*r_grid/h)/h) +&
          & dp_F**2*(       Delta_full_rpp(r_grid,z_grid,M)*(r_grid-q&
-         &*(z_grid-z0)/h)/h +Delta_full_zpp(r_grid,z_grid,M)*(z_grid&
+         &*(z_grid-z0)/h)/h +Delta_full_zpp(r_grid,z_grid,M)*((z_grid-z0)&
          &+q*r_grid/h)/h) )
 
     ! Extrinsic curvature terms (void for now)
@@ -745,7 +739,7 @@ contains
     ! Terms from the background metric
     ! q = 0 cancels atan on axis
 
-    F_q_temp = 0.0
+!    F_q_temp = 0.0
 
     F_q_temp = F_q_temp + h + 2.0*q**2/h &
          &+( metspheric_rr*q**2+2.0*metspheric_rt*q+metspheric_tt)&
