@@ -553,16 +553,6 @@ contains
          &*gammacov_zp(r_grid,z_grid,M))*h
 
 
-!!$    metspheric_rr= 1.0
-!!$    metspheric_tt= h**2
-!!$    metspheric_pp= h**2*sin(th)**2
-!!$    metspheric_pp_reg = h**2
-!!$    metspheric_rt= 0.0
-!!$    metspheric_rp= 0.0
-!!$    metspheric_tp= 0.0
-
-
-
     ! some auxiliary calculations
     det = metspheric_rr*metspheric_tt*metspheric_pp&
          &+2.0*metspheric_rt*metspheric_tp*metspheric_rp&
@@ -572,12 +562,12 @@ contains
 
 
     u_sq= gamma_rr(r_grid,z_grid,M)* (r_grid-q*(z_grid-z0)/h)**2/h**2&
-         &-2.0*gamma_rz(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)/h)&
+         &+2.0*gamma_rz(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)/h)&
          &*((z_grid-z0)+q*r_grid/h)/h**2+ gamma_zz(r_grid,z_grid,M)&
          &*((z_grid-z0)+q*r_grid/h)**2/h**2
 
     dr_F=gamma_rr(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)/h)/h&
-         &-gamma_rz(r_grid,z_grid,M)*((z_grid-z0)+q*r_grid/h)/h
+         &+gamma_rz(r_grid,z_grid,M)*((z_grid-z0)+q*r_grid/h)/h
     dz_F=gamma_rz(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)/h)/h&
          &+gamma_zz(r_grid,z_grid,M)*((z_grid-z0)+q*r_grid/h)/h
     dp_F=gamma_rp(r_grid,z_grid,M)*(r_grid-q*(z_grid-z0)/h)/h&
@@ -693,12 +683,12 @@ contains
     ! Boundary condition says q = 0 on axis
 
     u_sq=gamma_rr(r_grid,z_grid,M)*(r_grid)**2/h**2&
-         &-2.0*gamma_rz(r_grid,z_grid,M)*(r_grid)&
+         &+2.0*gamma_rz(r_grid,z_grid,M)*(r_grid)&
          &*(z_grid-z0)/h**2+ gamma_zz(r_grid,z_grid,M)&
          &*(z_grid-z0)**2/h**2
 
     dr_F=gamma_rr(r_grid,z_grid,M)*(r_grid)/h&
-         &-gamma_rz(r_grid,z_grid,M)*(z_grid-z0)/h
+         &+gamma_rz(r_grid,z_grid,M)*(z_grid-z0)/h
     dz_F=gamma_rz(r_grid,z_grid,M)*(r_grid)/h&
          &+gamma_zz(r_grid,z_grid,M)*(z_grid-z0)/h
     dp_F=gamma_rp(r_grid,z_grid,M)*(r_grid)/h&
